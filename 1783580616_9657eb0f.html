@@ -1,0 +1,871 @@
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行人重识别意义全面概述</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #0c0c1d 0%, #1a1a3e 50%, #0d1b2a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 粒子背景 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(0, 200, 255, 0.4);
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* 头部 */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 50px 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 200, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at center, rgba(0, 200, 255, 0.05) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .header-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            background: linear-gradient(135deg, #00c8ff, #7b2ff7, #ff6ec7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            position: relative;
+            letter-spacing: 2px;
+        }
+
+        .header .subtitle {
+            font-size: 1.15em;
+            color: rgba(200, 220, 255, 0.7);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+            position: relative;
+        }
+
+        /* 导航 */
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            background: rgba(10, 10, 30, 0.85);
+            backdrop-filter: blur(20px);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 200, 255, 0.1);
+        }
+
+        .nav-btn {
+            padding: 10px 24px;
+            background: rgba(0, 200, 255, 0.1);
+            border: 1px solid rgba(0, 200, 255, 0.3);
+            border-radius: 25px;
+            color: #00c8ff;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 200, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 200, 255, 0.2);
+        }
+
+        /* 区块标题 */
+        .section-title {
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            padding-left: 20px;
+            border-left: 4px solid #00c8ff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title .icon {
+            font-size: 1.2em;
+        }
+
+        /* 应用区块 */
+        .app-section {
+            margin-bottom: 60px;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .app-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(0, 200, 255, 0.12);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #00c8ff, #7b2ff7);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .app-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 200, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 200, 255, 0.1);
+        }
+
+        .app-card .card-icon {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .app-card h3 {
+            font-size: 1.2em;
+            color: #00c8ff;
+            margin-bottom: 10px;
+        }
+
+        .app-card p {
+            color: rgba(200, 220, 255, 0.7);
+            line-height: 1.7;
+            font-size: 0.95em;
+        }
+
+        /* 挑战区块 */
+        .challenge-section {
+            margin-bottom: 60px;
+        }
+
+        .challenge-table-wrapper {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 200, 255, 0.12);
+            overflow: hidden;
+        }
+
+        .challenge-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .challenge-table thead {
+            background: rgba(0, 200, 255, 0.1);
+        }
+
+        .challenge-table th {
+            padding: 18px 25px;
+            text-align: left;
+            font-weight: 600;
+            color: #00c8ff;
+            font-size: 1.05em;
+            border-bottom: 2px solid rgba(0, 200, 255, 0.2);
+        }
+
+        .challenge-table td {
+            padding: 16px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            line-height: 1.6;
+            transition: background 0.3s ease;
+        }
+
+        .challenge-table tr:hover td {
+            background: rgba(0, 200, 255, 0.05);
+        }
+
+        .challenge-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .challenge-type {
+            color: #ff6ec7;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .challenge-desc {
+            color: rgba(200, 220, 255, 0.75);
+        }
+
+        .challenge-icon {
+            margin-right: 8px;
+        }
+
+        /* 评估区块 */
+        .eval-section {
+            margin-bottom: 60px;
+        }
+
+        .eval-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .eval-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(123, 47, 247, 0.2);
+            border-radius: 16px;
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .eval-card::after {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(123, 47, 247, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .eval-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(123, 47, 247, 0.4);
+            box-shadow: 0 10px 40px rgba(123, 47, 247, 0.1);
+        }
+
+        .eval-card .eval-number {
+            font-size: 3em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #7b2ff7, #ff6ec7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .eval-card h3 {
+            font-size: 1.3em;
+            color: #c4a0ff;
+            margin-bottom: 12px;
+        }
+
+        .eval-card p {
+            color: rgba(200, 220, 255, 0.7);
+            line-height: 1.8;
+            font-size: 0.95em;
+        }
+
+        /* 流程图 */
+        .flow-section {
+            margin-bottom: 60px;
+        }
+
+        .flow-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            flex-wrap: wrap;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 200, 255, 0.12);
+        }
+
+        .flow-step {
+            text-align: center;
+            padding: 20px 25px;
+            min-width: 140px;
+        }
+
+        .flow-step .step-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(0, 200, 255, 0.1);
+            border: 2px solid rgba(0, 200, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            margin: 0 auto 12px;
+            transition: all 0.3s ease;
+        }
+
+        .flow-step:hover .step-icon {
+            background: rgba(0, 200, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .flow-step .step-label {
+            font-size: 0.9em;
+            color: rgba(200, 220, 255, 0.8);
+        }
+
+        .flow-arrow {
+            font-size: 1.5em;
+            color: rgba(0, 200, 255, 0.4);
+            padding: 0 5px;
+        }
+
+        /* 引用来源 */
+        .source-section {
+            margin-bottom: 40px;
+        }
+
+        .source-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .source-list li {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid rgba(0, 200, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .source-list li:hover {
+            background: rgba(0, 200, 255, 0.05);
+            border-left-color: #00c8ff;
+        }
+
+        .source-list a {
+            color: #00c8ff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .source-list a:hover {
+            color: #7b2ff7;
+            text-decoration: underline;
+        }
+
+        .source-tag {
+            display: inline-block;
+            padding: 2px 10px;
+            background: rgba(0, 200, 255, 0.15);
+            border-radius: 12px;
+            font-size: 0.8em;
+            color: #00c8ff;
+            margin-right: 10px;
+        }
+
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(0, 200, 255, 0.1);
+            color: rgba(200, 220, 255, 0.4);
+            font-size: 0.9em;
+        }
+
+        .footer .tech-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: rgba(0, 200, 255, 0.08);
+            border: 1px solid rgba(0, 200, 255, 0.15);
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.85em;
+            color: rgba(0, 200, 255, 0.6);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .section-title {
+                font-size: 1.4em;
+            }
+
+            .app-grid, .eval-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+
+            .challenge-table-wrapper {
+                overflow-x: auto;
+            }
+        }
+
+        /* 滚动动画 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 搜索框 */
+        .search-box {
+            max-width: 500px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 200, 255, 0.2);
+            border-radius: 30px;
+            color: #e0e0e0;
+            font-size: 1em;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            border-color: rgba(0, 200, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 200, 255, 0.1);
+        }
+
+        .search-box input::placeholder {
+            color: rgba(200, 220, 255, 0.4);
+        }
+
+        .search-box .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+            color: rgba(0, 200, 255, 0.5);
+        }
+
+        /* 高亮搜索 */
+        .highlight {
+            background: rgba(0, 200, 255, 0.2);
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 粒子背景 -->
+<div class="particles" id="particles"></div>
+
+<div class="container">
+
+    <!-- 头部 -->
+    <header class="header">
+        <span class="header-icon">🔍</span>
+        <h1>行人重识别意义全面概述</h1>
+        <p class="subtitle">
+            行人重识别（Person Re-Identification, ReID）是利用计算机视觉技术判断图像或视频序列中是否存在特定行人的技术，是智能安防领域的核心能力之一。
+        </p>
+    </header>
+
+    <!-- 导航 -->
+    <nav class="nav">
+        <a href="#applications" class="nav-btn">🛡️ 智能安防应用</a>
+        <a href="#challenges" class="nav-btn">⚡ 技术挑战</a>
+        <a href="#evaluation" class="nav-btn">📊 评估方法</a>
+        <a href="#workflow" class="nav-btn">🔄 技术流程</a>
+        <a href="#sources" class="nav-btn">📚 参考来源</a>
+    </nav>
+
+    <!-- 搜索框 -->
+    <div class="search-box">
+        <span class="search-icon">🔎</span>
+        <input type="text" id="searchInput" placeholder="搜索关键词，如：遮挡、mAP、跨镜追踪...">
+    </div>
+
+    <!-- 一、智能安防应用 -->
+    <section id="applications" class="app-section fade-in">
+        <h2 class="section-title">
+            <span class="icon">🛡️</span>
+            行人重识别在智能安防中的具体应用
+        </h2>
+        <p style="color: rgba(200,220,255,0.65); margin-bottom: 25px; line-height: 1.8;">
+            行人重识别技术在智能安防领域具有广泛的应用价值，能够有效弥补传统人脸识别在监控场景下的不足，为公共安全提供强有力的技术支撑。
+        </p>
+        <div class="app-grid">
+            <div class="app-card">
+                <span class="card-icon">🕵️</span>
+                <h3>嫌疑人识别与追踪</h3>
+                <p>通过跨摄像头追踪可疑人员，快速锁定目标、构建行动轨迹、提高破案效率。在案发后可迅速在海量监控录像中检索出嫌疑人的所有出现记录。</p>
+            </div>
+            <div class="app-card">
+                <span class="card-icon">🔗</span>
+                <h3>跨镜追踪</h3>
+                <p>在不同摄像头之间匹配同一行人，实现跨摄像头的人员追踪。即使摄像头之间没有重叠视野，也能通过外观特征关联同一目标。</p>
+            </div>
+            <div class="app-card">
+                <span class="card-icon">👶</span>
+                <h3>走失人员查找</h3>
+                <p>帮助寻找失踪人员，追踪其行动轨迹。特别对于老人、儿童等易走失人群，可以快速在城市监控网络中定位其最后出现的位置。</p>
+            </div>
+            <div class="app-card">
+                <span class="card-icon">🗺️</span>
+                <h3>轨迹识别与分析</h3>
+                <p>分析行人在不同摄像头下的移动路径，构建完整的时空行为图谱，为事件回溯和行为预测提供数据基础。</p>
+            </div>
+            <div class="app-card">
+                <span class="card-icon">🏢</span>
+                <h3>公共场所安全监控</h3>
+                <p>应用于机场、车站、智能社区等公共场所的安全管理，实现重点区域的实时人员布控和异常行为预警。</p>
+            </div>
+            <div class="app-card">
+                <span class="card-icon">📹</span>
+                <h3>视频结构化分析</h3>
+                <p>对海量监控视频进行结构化处理，自动提取行人属性信息（衣着颜色、性别、是否携带物品等），大幅提升视频检索效率。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 二、技术挑战 -->
+    <section id="challenges" class="challenge-section fade-in">
+        <h2 class="section-title">
+            <span class="icon">⚡</span>
+            行人重识别技术面临的主要挑战
+        </h2>
+        <p style="color: rgba(200,220,255,0.65); margin-bottom: 25px; line-height: 1.8;">
+            行人重识别技术面临多方面的技术挑战，这些挑战使得该问题在实际应用中远比人脸识别更为复杂和困难。
+        </p>
+        <div class="challenge-table-wrapper">
+            <table class="challenge-table">
+                <thead>
+                    <tr>
+                        <th>挑战类型</th>
+                        <th>具体问题描述</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="challenge-type"><span class="challenge-icon">📷</span>图像质量问题</td>
+                        <td class="challenge-desc">监控视频画面模糊、分辨率低，人脸识别难以应用。远距离拍摄导致行人图像像素过小，细节信息严重丢失。</td>
+                    </tr>
+                    <tr>
+                        <td class="challenge-type"><span class="challenge-icon">📐</span>视角变化</td>
+                        <td class="challenge-desc">不同摄像机拍摄角度差异大，同一行人在不同视角下外观差异显著。正面、侧面、背面的外观特征可能完全不同。</td>
+                    </tr>
+                    <tr>
+                        <td class="challenge-type"><span class="challenge-icon">☀️</span>光照变化</td>
+                        <td class="challenge-desc">室内外环境、白天黑夜光线差异导致外观特征变化。同一行人在不同光照条件下，颜色和纹理特征会发生显著改变。</td>
+                    </tr>
+                    <tr>
+                        <td class="challenge-type"><span class="challenge-icon">🚧</span>遮挡问题</td>
+                        <td class="challenge-desc">复杂场景中行人容易被遮挡，导致信息缺失。行人之间、行人与物体之间的遮挡使得部分外观特征无法获取。</td>
+                    </tr>
+                    <tr>
+                        <td class="challenge-type"><span class="challenge-icon">👗</span>外观变化</td>
+                        <td class="challenge-desc">行人姿态变化、服装配饰更换、季节性穿衣风格差别。同一人在不同时间的外观可能差异很大。</td>
+                    </tr>
+                    <tr>
+                        <td class="challenge-type"><span class="challenge-icon">📊</span>数据稀缺</td>
+                        <td class="challenge-desc">高质量大规模的真实标注数据非常稀缺。数据采集和标注成本高昂，且涉及隐私保护问题。</td>
+                    </tr>
+                    <tr>
+                        <td class="challenge-type"><span class="challenge-icon">🌐</span>跨域差异</td>
+                        <td class="challenge-desc">不同摄像设备之间的背景、风格具有较大差异。设备型号、安装位置、拍摄参数的不同都会带来域间差异。</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 三、评估方法 -->
+    <section id="evaluation" class="eval-section fade-in">
+        <h2 class="section-title">
+            <span class="icon">📊</span>
+            行人重识别算法性能评估方法
+        </h2>
+        <p style="color: rgba(200,220,255,0.65); margin-bottom: 25px; line-height: 1.8;">
+            行人重识别算法常用的评估指标用于衡量检索结果的准确性和排序质量，是评价算法性能的重要标准。
+        </p>
+        <div class="eval-cards">
+            <div class="eval-card">
+                <span class="eval-number">01</span>
+                <h3>Rank-n 准确率</h3>
+                <p>
+                    衡量在前 n 个最相似的图像中是否包含正确匹配项。<br><br>
+                    <strong style="color: #ff6ec7;">Rank-1 准确率</strong>（首位命中率）：表示正确匹配到第一个目标的概率，是最核心的评估指标之一。Rank-n 则表示前 n 个结果中包含正确匹配的概率。
+                </p>
+            </div>
+            <div class="eval-card">
+                <span class="eval-number">02</span>
+                <h3>CMC 曲线</h3>
+                <p>
+                    CMC（累积匹配特征）曲线显示在不同排名下的准确率。横轴表示排名（Rank），纵轴表示准确率值。<br><br>
+                    曲线向上趋势表示算法能在更高排名下找到正确匹配。CMC 曲线能够全面反映算法在不同排名位置的检索能力。
+                </p>
+            </div>
+            <div class="eval-card">
+                <span class="eval-number">03</span>
+                <h3>mAP（平均精度均值）</h3>
+                <p>
+                    mAP（mean Average Precision）综合考虑检索结果的准确性和排名的精确度，反映所有正确匹配图片在结果队列中排在前面的程度。<br><br>
+                    是评估算法整体性能的重要指标，能够同时衡量查准率和查全率。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技术流程 -->
+    <section id="workflow" class="flow-section fade-in">
+        <h2 class="section-title">
+            <span class="icon">🔄</span>
+            行人重识别技术流程
+        </h2>
+        <div class="flow-container">
+            <div class="flow-step">
+                <div class="step-icon">📹</div>
+                <div class="step-label">视频采集</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+                <div class="step-icon">🎯</div>
+                <div class="step-label">行人检测</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+                <div class="step-icon">✂️</div>
+                <div class="step-label">图像裁剪</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+                <div class="step-icon">🧬</div>
+                <div class="step-label">特征提取</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+                <div class="step-icon">📏</div>
+                <div class="step-label">距离度量</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+                <div class="step-icon">✅</div>
+                <div class="step-label">匹配检索</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 参考来源 -->
+    <section id="sources" class="source-section fade-in">
+        <h2 class="section-title">
+            <span class="icon">📚</span>
+            参考来源
+        </h2>
+        <ul class="source-list">
+            <li>
+                <span class="source-tag">产品</span>
+                <a href="http://www.cas-aitech.com/product_details_214518.html" target="_blank">明彦视频行人重识别系统</a>
+            </li>
+            <li>
+                <span class="source-tag">综述</span>
+                <a href="https://html.rhhz.net/tis/html/201706084.htm" target="_blank">行人重识别研究综述</a>
+            </li>
+            <li>
+                <span class="source-tag">百科</span>
+                <a href="https://baike.baidu.com/item/%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB/20815009" target="_blank">行人重识别 - 百度百科</a>
+            </li>
+            <li>
+                <span class="source-tag">论文</span>
+                <a href="https://xk.sia.cn/cn/article/pdf/preview/10.13976/j.cnji.xk.2024.4041.pdf" target="_blank">可见光红外跨模态行人重识别方法综述</a>
+            </li>
+            <li>
+                <span class="source-tag">综述</span>
+                <a href="http://hologramsociety.wimiar.com/index.php?m=Home&c=Index&a=news_view&id=589" target="_blank">行人重识别综述 - 滕达博士</a>
+            </li>
+        </ul>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p style="margin-bottom: 15px;">行人重识别（Person Re-Identification）技术概览</p>
+        <div>
+            <span class="tech-badge">🧠 深度学习</span>
+            <span class="tech-badge">👁️ 计算机视觉</span>
+            <span class="tech-badge">🔒 智能安防</span>
+            <span class="tech-badge">📡 跨摄像头追踪</span>
+            <span class="tech-badge">🎯 特征匹配</span>
+        </div>
+        <p style="margin-top: 20px; font-size: 0.85em;">© 2024 行人重识别技术研究 | 基于搜索结果生成</p>
+    </footer>
+
+</div>
+
+<script>
+    // 粒子背景
+    const particlesContainer = document.getElementById('particles');
+    for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
+        particle.style.animationDelay = (Math.random() * 10) + 's';
+        particle.style.width = (Math.random() * 3 + 1) + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.background = `rgba(${Math.random() > 0.5 ? '0, 200, 255' : '123, 47, 247'}, ${Math.random() * 0.3 + 0.1})`;
+        particlesContainer.appendChild(particle);
+    }
+
+    // 滚动动画
+    const fadeElements = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    fadeElements.forEach(el => observer.observe(el));
+
+    // 搜索功能
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        const sections = document.querySelectorAll('.fade-in, .app-card, .eval-card, .challenge-table tr, .flow-step');
+        
+        // 移除所有高亮
+        document.querySelectorAll('.highlight').forEach(el => {
+            el.outerHTML = el.textContent;
+        });
+
+        if (query.length === 0) {
+            sections.forEach(s => s.style.display = '');
+            return;
+        }
+
+        // 搜索并高亮
+        const allTextElements = document.querySelectorAll('p, td, h3, .step-label, .app-card, .eval-card');
+        allTextElements.forEach(el => {
+            const text = el.textContent.toLowerCase();
+            if (text.includes(query)) {
+                el.closest('.app-card, .eval-card, .challenge-table-wrapper, .flow-container, .app-section, .challenge-section, .eval-section, .flow-section')?.querySelector('.fade-in')?.classList.add('visible');
+            }
+        });
+    });
+
+    // 平滑滚动
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
+```
