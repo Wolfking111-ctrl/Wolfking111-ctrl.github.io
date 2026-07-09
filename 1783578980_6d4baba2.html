@@ -1,0 +1,198 @@
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行人重识别（Person Re-identification, Re-ID）</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 35px;
+            border-left: 5px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #16a085;
+            margin-top: 25px;
+        }
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .content-section {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        .highlight {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .references {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 40px;
+            font-size: 0.9em;
+        }
+        .references h2 {
+            color: #7f8c8d;
+            border-left: 5px solid #95a5a6;
+            margin-top: 0;
+        }
+        .references ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .references li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+        .tag {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            margin-right: 5px;
+        }
+        .tech-challenge {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-left: 4px solid #f1c40f;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .method-category {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-section">
+        <h1>行人重识别（Person Re-identification, Re-ID）</h1>
+        
+        <h2>1. 定义</h2>
+        <p>行人重识别，也称行人再识别或跨镜追踪，是利用计算机视觉技术判断图像或视频序列中是否存在特定行人的技术。其核心目标是<strong>跨摄像头检索</strong>：给定一个监控行人图像，在其他不同摄像头拍摄的画面中检索是否存在相同行人，从而弥补固定摄像头的视觉局限。</p>
+        
+        <div class="highlight">
+            <strong>核心思想：</strong>在多个摄像头组成的监控网络中，识别并追踪同一行人，即使该行人从一个摄像头的视野中消失后又在另一个摄像头的视野中出现。
+        </div>
+        
+        <h2>2. 主要应用场景</h2>
+        <ul>
+            <li><strong>智能视频监控与安防</strong>：在机场、车站、智能社区等公共场所，跨摄像头追踪可疑人员或失踪人员，快速锁定目标、构建行动轨迹、提高破案效率。</li>
+            <li><strong>智慧城市与智能交通管理</strong>：用于城市安防、交通流量分析、行人行为分析等。</li>
+            <li><strong>作为人脸识别的补充</strong>：在人脸图像捕获条件不利（如侧脸、低分辨率、遮挡）时，通过行人外观特征辅助确认人员目标。</li>
+            <li><strong>零售分析</strong>：分析顾客在商场内的移动路径和行为模式。</li>
+            <li><strong>体育赛事分析</strong>：在大型体育场馆中追踪特定运动员或观众。</li>
+        </ul>
+        
+        <h2>3. 主要技术挑战</h2>
+        <div class="tech-challenge">
+            <p>行人重识别面临多种技术挑战，这些挑战使得准确匹配不同摄像头下的同一行人变得困难：</p>
+        </div>
+        <ul>
+            <li><strong>跨摄像头差异</strong>：不同摄像头的光照、视角、成像参数（如焦距、白平衡）不同，导致同一行人在不同摄像头下外观差异大。</li>
+            <li><strong>行人外观变化</strong>：姿态变化（行走、转身）、衣着更换（如换衣重识别）、携带物品变化等。</li>
+            <li><strong>遮挡与低分辨率</strong>：监控场景中行人易被其他行人、车辆或物体遮挡，且远景摄像头拍摄的图像分辨率低、模糊。</li>
+            <li><strong>数据规模与标注困难</strong>：高质量大规模的真实标注数据稀缺，标注成本高，限制了模型的泛化能力。</li>
+            <li><strong>实时性要求</strong>：实际应用中需要快速检索，尤其是在大规模监控系统中。</li>
+            <li><strong>视角变化</strong>：行人可能从不同角度被拍摄，如正面、侧面、背面。</li>
+            <li><strong>背景杂乱</strong>：复杂背景可能干扰行人特征提取。</li>
+        </ul>
+        
+        <h2>4. 常用算法与模型</h2>
+        <p>行人重识别技术主要分为<strong>特征提取</strong>与<strong>度量学习</strong>两大模块，现代方法通常将两者结合进行端到端训练。</p>
+        
+        <h3>4.1 特征提取</h3>
+        <div class="method-category">
+            <p><strong>传统方法：</strong>早期使用手工特征，如颜色直方图、HOG（方向梯度直方图）、LBP（局部二值模式）等。</p>
+        </div>
+        <div class="method-category">
+            <p><strong>深度学习方法：</strong>现主流为深度学习方法，使用卷积神经网络（CNN）或Transformer架构进行端到端特征学习。CNN能够自动学习具有判别性的行人特征表示。</p>
+        </div>
+        
+        <h3>4.2 度量学习</h3>
+        <p>目标是使同类行人特征距离最小化，异类行人特征距离最大化。常用方法包括：</p>
+        <ul>
+            <li><strong>三元组损失（Triplet Loss）</strong>：通过锚点、正样本、负样本学习特征表示，使锚点与正样本的距离小于锚点与负样本的距离。</li>
+            <li><strong>分类损失（如Softmax交叉熵损失）</strong>：将重识别视为图像分类问题，每个行人ID作为一个类别。</li>
+            <li><strong>对比损失（Contrastive Loss）</strong>：将重识别视为图像匹配问题，拉近匹配对距离，推远非匹配对距离。</li>
+            <li><strong>四元组损失（Quadruplet Loss）</strong>：在三元组基础上增加约束，进一步提升特征区分度。</li>
+            <li><strong>中心损失（Center Loss）</strong>：学习每个类的中心，减小类内变化。</li>
+        </ul>
+        
+        <h3>4.3 代表性模型与架构</h3>
+        <ul>
+            <li><strong>Siamese网络</strong>：通过共享卷积网络映射图像到同一向量空间，计算距离进行匹配。</li>
+            <li><strong>Part-based Convolutional Baseline (PCB)</strong>：将行人图像水平分为多个部分，分别提取特征后拼接，以改善特征提取的局部性。</li>
+            <li><strong>MGN (Multiple Granularity Network)</strong>：在PCB基础上引入多粒度特征学习。</li>
+            <li><strong>基于生成对抗网络（GAN）的方法</strong>：用于数据增强（生成新视角的行人图像）或解决跨模态问题（如可见光-红外Re-ID）。</li>
+            <li><strong>基于视频的方法</strong>：利用时序信息，结合CNN和RNN（或3D卷积）处理视频序列，提取时空特征。</li>
+            <li><strong>基于Transformer的方法</strong>：利用自注意力机制建模行人图像的全局和局部关系，近年来表现优异。</li>
+            <li><strong>无监督/自监督方法</strong>：减少对标注数据的依赖，利用聚类、伪标签等技术。</li>
+        </ul>
+        
+        <h2>5. 评价指标</h2>
+        <p>常用的评价指标包括：</p>
+        <ul>
+            <li><strong>Rank-n Accuracy (Rank-n)</strong>：在排序结果中，前n个结果包含正确匹配的比例。常用指标有Rank-1、Rank-5、Rank-10。Rank-1准确率表示最相似的检索结果就是正确匹配的概率。</li>
+            <li><strong>平均精度均值（mAP, mean Average Precision）</strong>：综合考虑检索结果的准确率和召回率，对每个查询计算平均精度（AP），然后对所有查询取平均。mAP越高，说明检索结果的整体排序质量越好。</li>
+            <li><strong>CMC曲线（Cumulative Match Characteristic）</strong>：显示Rank-n准确率随n变化的曲线。</li>
+            <li><strong>检测-识别分离评估</strong>：在端到端系统中，有时会分别评估检测性能和识别性能。</li>
+        </ul>
+        
+        <div class="highlight">
+            <strong>评估协议：</strong>标准评估通常采用"跨摄像头"协议，即查询图像和库图像来自不同的摄像头，以模拟真实应用场景。常用数据集包括Market-1501、DukeMTMC-reID、MSMT17等。
+        </div>
+    </div>
+    
+    <div class="references">
+        <h2>引用来源</h2>
+        <ul>
+            <li>[1] 行人重识别 - 智能计算机体系结构实验室. <a href="https://sjtu-icat.github.io/project/reid" target="_blank">https://sjtu-icat.github.io/project/reid</a></li>
+            <li>[2] 预训练大模型技术在行人重识别的应用综述 - 中国图象图形学报. <a href="https://www.cjig.cn/" target="_blank">中国图象图形学报</a></li>
+            <li>[3] 行人重识别 - 百度百科. <a href="https://baike.baidu.com/item/%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB/20815009" target="_blank">百度百科</a></li>
+            <li>[4] 行人重识别研究综述. <a href="https://html.rhhz.net/tis/html/201706084.htm" target="_blank">在线阅读</a></li>
+            <li>[5] 基于深度学习的行人重识别方法综述 - 工程科学学报. <a href="https://cje.ustb.edu.cn/" target="_blank">工程科学学报</a></li>
+            <li>[6] 行人重识别综述 - 滕达博士. <a href="http://hologramsociety.wimiar.com/index.php?m=Home&c=Index&a=news_view&id=589" target="_blank">全息学会</a></li>
+        </ul>
+    </div>
+</body>
+</html>
+```
