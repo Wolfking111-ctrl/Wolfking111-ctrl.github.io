@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>什么是行人重识别</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background-color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-top: 35px;
+            margin-bottom: 15px;
+        }
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        p {
+            margin-bottom: 16px;
+            text-align: justify;
+        }
+        ul, ol {
+            padding-left: 24px;
+            margin-bottom: 16px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        strong {
+            color: #1a1a1a;
+        }
+        blockquote {
+            margin: 20px 0;
+            padding: 15px 20px;
+            border-left: 4px solid #3498db;
+            background-color: #f8f9fa;
+            color: #555;
+        }
+        .source-section {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+        .source-section h3 {
+            font-size: 16px;
+            margin-top: 0;
+        }
+        .source-section ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .source-section li {
+            margin-bottom: 6px;
+        }
+        .source-section a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .source-section a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>什么是行人重识别</h1>
+
+        <h2>1. 什么是行人重识别？</h2>
+        <p>行人重识别（Person Re-Identification, Re-ID），也称为行人再识别或跨镜追踪，是一种利用计算机视觉技术，在<strong>不同且视野不重叠</strong>的摄像头拍摄的视频或图像序列中，识别并匹配同一行人身份的技术。其核心目标是弥补固定摄像头的视觉局限，实现跨摄像头的人员检索与追踪。</p>
+
+        <h2>2. 行人重识别的主要应用场景有哪些？</h2>
+        <p>行人重识别技术主要应用于以下领域：</p>
+        <ul>
+            <li><strong>智能视频监控与安防</strong>：在机场、车站、商场、社区等公共场所，用于跨摄像头追踪可疑人员或失踪人员，快速锁定目标、构建行动轨迹，提高安防效率和破案速度。</li>
+            <li><strong>智慧城市与智能交通管理</strong>：作为城市大脑的一部分，用于人流分析、交通管理、公共安全事件应对等。</li>
+            <li><strong>作为人脸识别的补充</strong>：在人脸图像模糊、侧脸、后脑勺或光照条件不佳等人脸识别难以有效工作的场景下，通过人体外观特征进行身份确认。</li>
+        </ul>
+
+        <h2>3. 行人重识别技术面临哪些主要挑战？</h2>
+        <p>该技术在实际应用中面临多重挑战，主要包括：</p>
+        <ul>
+            <li><strong>跨摄像头差异</strong>：不同摄像头的拍摄角度、光照条件、背景环境存在巨大差异，导致同一行人在不同摄像头下的外观特征变化显著。</li>
+            <li><strong>行人外观变化</strong>：行人的姿态、衣着（如季节变化）、是否携带物品等都会发生变化。</li>
+            <li><strong>遮挡与低分辨率</strong>：在拥挤场景中，行人常被其他行人、建筑物或物体遮挡，导致关键信息丢失；同时，监控画面常存在分辨率低、图像模糊的问题。</li>
+            <li><strong>数据标注困难</strong>：高质量、大规模的跨摄像头行人标注数据集非常稀缺，标注成本高昂，这限制了模型的训练和泛化能力。</li>
+            <li><strong>跨模态差异</strong>：在可见光与红外图像之间进行匹配时，由于成像原理不同，存在显著的模态差异。</li>
+        </ul>
+
+        <h2>4. 深度学习如何提升行人重识别的准确率？</h2>
+        <p>深度学习已成为行人重识别领域的主流技术，其提升准确率的关键方式包括：</p>
+        <ul>
+            <li><strong>自动特征提取</strong>：利用卷积神经网络（CNN）或Transformer等深度网络，从原始图像中自动学习具有高判别性的行人特征（如全局特征、局部特征、语义特征），替代了传统手工设计特征的方法，能更好地应对复杂场景。</li>
+            <li><strong>优化度量学习</strong>：通过设计更有效的损失函数（如三元组损失、四元组损失、中心损失等），使模型在特征空间中学习到“同类行人特征距离最小化，异类行人特征距离最大化”的度量关系。</li>
+            <li><strong>处理序列信息</strong>：对于视频数据，利用循环神经网络（RNN）或3D卷积等方法融合时序信息，提取更稳定的行人特征。</li>
+            <li><strong>重排序优化</strong>：在初步匹配结果的基础上，利用重排序算法对结果进行二次优化，进一步提升检索精度。</li>
+            <li><strong>利用大规模预训练</strong>：通过在大规模无标签数据上进行自监督预训练，提升模型的泛化能力，以应对实际应用中数据不足的问题。</li>
+        </ul>
+
+        <div class="source-section">
+            <h3>引用来源</h3>
+            <ul>
+                <li><a href="https://sjtu-icat.github.io/project/reid" target="_blank" rel="noopener noreferrer">行人重识别 | 智能计算机体系结构实验室</a></li>
+                <li><a href="https://baike.baidu.com/item/%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB/20815009" target="_blank" rel="noopener noreferrer">行人重识别 - 百度百科</a></li>
+                <li><a href="https://html.rhhz.net/tis/html/201706084.htm" target="_blank" rel="noopener noreferrer">行人重识别研究综述</a></li>
+                <li><a href="https://www.cjig.cn/rc-pub/front/front-article/download/67910761/lowqualitypdf/%E8%B5%B0%E5%90%91%E9%80%9A%E7%94%A8%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB%EF%BC%9A%E9%A2%84%E8%AE%AD%E7%BB%83%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%8A%80%E6%9C%AF%E5%9C%A8%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB%E7%9A%84%E5%BA%94%E7%94%A8%E7%BB%BC%E8%BF%B0.pdf" target="_blank" rel="noopener noreferrer">预训练大模型技术在行人重识别的应用综述 - 中国图象图形学报</a></li>
+                <li><a href="http://www.aas.net.cn/fileZDHXB/journal/article/zdhxb/2019/11/PDF/zdhxb-45-11-2032.pdf" target="_blank" rel="noopener noreferrer">基于深度学习的行人重识别研究进展 - 自动化学报</a></li>
+                <li>知识库文档：《基于通道增强与特征补偿的RGB-IR跨模态行人重识别方法研究与系统实现_常乐乐.pdf》、《test.pdf》</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
