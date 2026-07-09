@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行人重识别技术全面概述</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            background: radial-gradient(ellipse at center, rgba(100, 100, 255, 0.15) 0%, transparent 70%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 40px,
+                rgba(255, 255, 255, 0.02) 40px,
+                rgba(255, 255, 255, 0.02) 41px
+            ),
+            repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 40px,
+                rgba(255, 255, 255, 0.02) 40px,
+                rgba(255, 255, 255, 0.02) 41px
+            );
+            animation: gridMove 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(120deg, #00d2ff, #3a7bd5, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0c0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero .en-name {
+            font-size: 1rem;
+            color: #6c6c9c;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px 80px;
+        }
+
+        /* Section Title */
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin: 60px 0 30px;
+            gap: 15px;
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .section-title h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .section-title .line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(100, 100, 255, 0.5), transparent);
+        }
+
+        /* Application Cards */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .app-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--card-color), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .app-card:hover::before {
+            opacity: 1;
+        }
+
+        .app-card .card-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .app-card h3 {
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .app-card p {
+            font-size: 0.95rem;
+            color: #a0a0c0;
+        }
+
+        /* Challenge Table */
+        .challenge-table-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .challenge-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .challenge-table thead {
+            background: rgba(100, 100, 255, 0.15);
+        }
+
+        .challenge-table th {
+            padding: 18px 24px;
+            text-align: left;
+            font-weight: 600;
+            color: #c0c0ff;
+            font-size: 1rem;
+            border-bottom: 2px solid rgba(100, 100, 255, 0.3);
+        }
+
+        .challenge-table td {
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.95rem;
+            color: #c0c0d0;
+        }
+
+        .challenge-table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .challenge-table tbody tr:hover {
+            background: rgba(100, 100, 255, 0.08);
+        }
+
+        .challenge-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .challenge-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .tag-red { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        .tag-orange { background: rgba(249, 115, 22, 0.2); color: #fdba74; }
+        .tag-yellow { background: rgba(234, 179, 8, 0.2); color: #fde047; }
+        .tag-purple { background: rgba(168, 85, 247, 0.2); color: #d8b4fe; }
+        .tag-blue { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+        .tag-green { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+        .tag-pink { background: rgba(236, 72, 153, 0.2); color: #f9a8d4; }
+        .tag-cyan { background: rgba(6, 182, 212, 0.2); color: #67e8f9; }
+
+        /* Algorithm Section */
+        .algo-category {
+            margin-bottom: 40px;
+        }
+
+        .algo-category h3 {
+            font-size: 1.3rem;
+            color: #a0a0ff;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 3px solid #6366f1;
+        }
+
+        .algo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .algo-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .algo-card:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            background: rgba(99, 102, 241, 0.05);
+            transform: translateY(-3px);
+        }
+
+        .algo-card h4 {
+            font-size: 1.1rem;
+            color: #e0e0ff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .algo-card h4 .algo-badge {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(99, 102, 241, 0.3);
+            color: #a5b4fc;
+            font-weight: 500;
+        }
+
+        .algo-card p {
+            font-size: 0.95rem;
+            color: #a0a0c0;
+        }
+
+        /* Two Module Cards */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-top: 10px;
+        }
+
+        .module-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.05));
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .module-card h3 {
+            font-size: 1.3rem;
+            color: #c7d2fe;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .module-card p {
+            font-size: 0.95rem;
+            color: #a0a0c0;
+            line-height: 2;
+        }
+
+        /* Pipeline Flow */
+        .pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 40px 0;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .pipeline-step {
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            color: #c7d2fe;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .pipeline-arrow {
+            font-size: 1.5rem;
+            color: #6366f1;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #6c6c9c;
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: #818cf8;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .module-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pipeline {
+                flex-direction: column;
+            }
+
+            .pipeline-arrow {
+                transform: rotate(90deg);
+            }
+
+            .challenge-table th,
+            .challenge-table td {
+                padding: 12px 15px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Scroll animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <h1>行人重识别技术</h1>
+        <div class="en-name">Person Re-identification (Re-ID) / 跨镜追踪</div>
+        <p class="subtitle">
+            行人重识别是指在不同摄像头拍摄的图像或视频序列中，判断是否为同一行人的技术。
+            它弥补了固定摄像头的视觉局限，是智能视频监控与智慧城市的核心技术之一。
+        </p>
+    </header>
+
+    <div class="container">
+
+        <!-- ==================== 应用场景 ==================== -->
+        <div class="section-title fade-in">
+            <div class="section-icon" style="background: rgba(34, 197, 94, 0.15); color: #86efac;">🎯</div>
+            <h2>一、主要应用场景</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="app-grid fade-in">
+            <div class="app-card" style="--card-color: #22c55e;">
+                <span class="card-icon">📹</span>
+                <h3>智能视频监控</h3>
+                <p>在不同摄像头之间追踪目标行人，弥补固定摄像头的视觉局限，实现跨镜头的连续追踪与行为分析。</p>
+            </div>
+            <div class="app-card" style="--card-color: #ef4444;">
+                <span class="card-icon">🛡️</span>
+                <h3>智能安防</h3>
+                <p>帮助追踪嫌疑人或失踪人员，快速锁定目标、构建行动轨迹、大幅提高公安部门的破案效率。</p>
+            </div>
+            <div class="app-card" style="--card-color: #3b82f6;">
+                <span class="card-icon">🏙️</span>
+                <h3>智慧城市</h3>
+                <p>城市安防与智能交通管理的重要组成部分，助力构建安全、高效的城市运行体系。</p>
+            </div>
+            <div class="app-card" style="--card-color: #a855f7;">
+                <span class="card-icon">🚉</span>
+                <h3>公共场所安全</h3>
+                <p>机场、车站、智能社区等人员密集场所的人员追踪与异常行为检测，保障公共安全。</p>
+            </div>
+            <div class="app-card" style="--card-color: #f59e0b;">
+                <span class="card-icon">👤</span>
+                <h3>人脸识别补充</h3>
+                <p>在人脸图像捕获条件不利（如侧脸、遮挡、低分辨率）时，通过人体外观信息辅助确认人员目标。</p>
+            </div>
+        </div>
+
+        <!-- ==================== 主要挑战 ==================== -->
+        <div class="section-title fade-in">
+            <div class="section-icon" style="background: rgba(239, 68, 68, 0.15); color: #fca5a5;">⚠️</div>
+            <h2>二、技术面临的主要挑战</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="challenge-table-wrapper fade-in">
+            <table class="challenge-table">
+                <thead>
+                    <tr>
+                        <th style="width: 180px;">挑战类型</th>
+                        <th>具体描述</th>
+                        <th style="width: 120px;">严重程度</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="challenge-tag tag-red">图像分辨率低</span></td>
+                        <td>监控视频画面模糊，无法使用人脸识别，只能依赖人体外观信息进行匹配</td>
+                        <td style="color: #fca5a5;">★★★★★</td>
+                    </tr>
+                    <tr>
+                        <td><span class="challenge-tag tag-orange">视角变化</span></td>
+                        <td>不同摄像机拍摄角度不同，导致同一行人外观差异大，特征难以对齐</td>
+                        <td style="color: #fdba74;">★★★★☆</td>
+                    </tr>
+                    <tr>
+                        <td><span class="challenge-tag tag-yellow">光照变化</span></td>
+                        <td>不同光照条件下，行人外观特征差异显著，颜色与纹理信息失真</td>
+                        <td style="color: #fde047;">★★★★☆</td>
+                    </tr>
+                    <tr>
+                        <td><span class="challenge-tag tag-purple">姿态变化</span></td>
+                        <td>行人在不同时刻的姿态、衣着会有改变，增加特征匹配难度</td>
+                        <td style="color: #d8b4fe;">★★★★☆</td>
+                    </tr>
+                    <tr>
+                        <td><span class="challenge-tag tag-blue">遮挡问题</span></td>
+                        <td>拥挤场景中行人被建筑物、行李或其他行人遮挡，关键特征丢失</td>
+                        <td style="color: #93c5fd;">★★★★☆</td>
+                    </tr>
+                    <tr>
+                        <td><span class="challenge-tag tag-green">跨域问题</span></td>
+                        <td>场景复杂、不同摄像头的成像环境差异大，域间特征分布不一致</td>
+                        <td style="color: #86efac;">★★★★☆</td>
+                    </tr>
+                    <tr>
+                        <td><span class="challenge-tag tag-pink">数据标注困难</span></td>
+                        <td>高质量大规模的真实标注数据稀缺，标注成本高，限制模型训练</td>
+                        <td style="color: #f9a8d4;">★★★☆☆</td>
+                    </tr>
+                    <tr>
+                        <td><span class="challenge-tag tag-cyan">撞衫问题</span></td>
+                        <td>不同行人的体型和衣着服饰可能相同，仅靠外观特征难以区分</td>
+                        <td style="color: #67e8f9;">★★★☆☆</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ==================== 技术流程 ==================== -->
+        <div class="section-title fade-in">
+            <div class="section-icon" style="background: rgba(99, 102, 241, 0.15); color: #a5b4fc;">🔄</div>
+            <h2>三、技术流程概览</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="pipeline fade-in">
+            <div class="pipeline-step">📷 输入图像/视频</div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">🔍 行人检测</div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">🧬 特征提取 (CNN/Transformer)</div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">📐 度量学习</div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-step">✅ 身份匹配</div>
+        </div>
+
+        <!-- ==================== 主流算法 ==================== -->
+        <div class="section-title fade-in">
+            <div class="section-icon" style="background: rgba(168, 85, 247, 0.15); color: #d8b4fe;">🧠</div>
+            <h2>四、主流算法</h2>
+            <div class="line"></div>
+        </div>
+
+        <!-- 传统方法 -->
+        <div class="algo-category fade-in">
+            <h3>传统方法</h3>
+            <div class="algo-grid">
+                <div class="algo-card">
+                    <h4>🎨 颜色直方图 <span class="algo-badge">手工特征</span></h4>
+                    <p>利用RGB、HSV等颜色空间特征描述行人外观，计算直方图之间的距离进行相似度度量。简单高效但对光照敏感。</p>
+                </div>
+                <div class="algo-card">
+                    <h4>📊 纹理特征 <span class="algo-badge">手工特征</span></h4>
+                    <p>使用局部二值模式（LBP）、方向梯度直方图（HOG）等提取行人的纹理和边缘信息，对光照变化有一定鲁棒性。</p>
+                </div>
+                <div class="algo-card">
+                    <h4>📏 度量学习 <span class="algo-badge">传统方法</span></h4>
+                    <p>包括马氏距离、LMNN（大间隔最近邻）、kLFDA等方法，通过学习最优距离度量来区分不同身份的行人。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 深度学习方法 -->
+        <div class="algo-category fade-in">
+            <h3>深度学习方法（当前主流）</h3>
+            <div class="algo-grid">
+                <div class="algo-card">
+                    <h4>🔗 Siamese 网络 <span class="algo-badge">深度学习</span></h4>
+                    <p>将两张图像通过共享卷积网络映射到同一向量空间，计算特征向量之间的距离进行行人匹配，端到端训练。</p>
+                </div>
+                <div class="algo-card">
+                    <h4>🔺 Triplet Loss <span class="algo-badge">深度学习</span></h4>
+                    <p>利用三元组（Anchor、Positive、Negative）学习特征表示，拉近同类行人特征距离、推远异类行人特征距离，是Re-ID中最经典的损失函数之一。</p>
+                </div>
+                <div class="algo-card">
+                    <h4>🧩 PCB (Part-based Convolutional Baseline) <span class="algo-badge">深度学习</span></h4>
+                    <p>将行人图像水平分割为多个部分（如6个条状区域），分别训练分类器后拼接特征，有效利用局部判别信息。</p>
+                </div>
+                <div class="algo-card">
+                    <h4>🌐 MGN (Multi-granularity Network) <span class="algo-badge">深度学习</span></h4>
+                    <p>多粒度特征学习网络，同时提取全局特征和多种粒度的局部特征，融合多尺度信息提升识别精度。</p>
+                </div>
+                <div class="algo-card">
+                    <h4>🤖 Transformer 网络 <span class="algo-badge">深度学习</span></h4>
+                    <p>利用自注意力机制提取全局特征，能够建模长距离依赖关系，在Re-ID任务中展现出强大的特征表达能力。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 两大核心模块 ==================== -->
+        <div class="section-title fade-in">
+            <div class="section-icon" style="background: rgba(6, 182, 212, 0.15); color: #67e8f9;">⚙️</div>
+            <h2>五、两大核心模块</h2>
+            <div class="line"></div>
+        </div>
+
+        <div class="module-grid fade-in">
+            <div class="module-card">
+                <h3>🧬 模块一：特征提取</h3>
+                <p>
+                    通过 CNN（如 ResNet、OSNet）或 Transformer 架构，从行人图像中提取全局特征与局部特征。
+                    全局特征捕捉行人的整体外观信息，局部特征（如头部、上身、下身）则关注细节判别区域，
+                    两者融合可显著提升识别的鲁棒性和准确性。
+                </p>
+            </div>
+            <div class="module-card">
+                <h3>📐 模块二：度量学习</h3>
+                <p>
+                    使用三元组损失（Triplet Loss）、分类损失（Cross-Entropy Loss）或对比损失（Contrastive Loss）等，
+                    在特征空间中优化行人特征的分布，使同一身份行人的特征距离最小化，
+                    不同身份行人之间的特征距离最大化，从而实现精准的身份匹配。
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>
+            参考资料：
+            <a href="https://sjtu-icat.github.io/project/reid" target="_blank">上海交大智能计算机体系结构实验室</a> ·
+            <a href="https://baike.baidu.com/item/%E8%A1%8C%E4%BA%BA%E9%87%8D%E8%AF%86%E5%88%AB/20815009" target="_blank">百度百科-行人重识别</a> ·
+            <a href="https://html.rhhz.net/tis/html/201706084.htm" target="_blank">行人重识别研究综述</a> ·
+            <a href="http://hologramsociety.wimiar.com/index.php?m=Home&c=Index&a=news_view&id=589" target="_blank">行人重识别综述-滕达博士</a>
+        </p>
+        <p style="margin-top: 10px;">© 2024 行人重识别技术概述 | 基于深度学习的行人重识别方法综述</p>
+    </footer>
+
+    <script>
+        // Scroll fade-in animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+
+</body>
+</html>
