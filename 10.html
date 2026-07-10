@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卷积神经网络结构示意图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333333;
+            line-height: 1.8;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eaeaea;
+        }
+        h2 {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 35px;
+            margin-bottom: 15px;
+        }
+        h3 {
+            font-size: 18px;
+            font-weight: bold;
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 16px;
+            color: #4a4a4a;
+            margin-bottom: 18px;
+            text-align: justify;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 40px 0;
+        }
+        blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 18px;
+            margin: 25px 0;
+            color: #666666;
+            font-style: italic;
+        }
+        ul {
+            padding-left: 24px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+            color: #555555;
+        }
+        a {
+            color: #2980b9;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            h2 {
+                font-size: 20px;
+            }
+            p {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>卷积神经网络结构示意图</h1>
+        
+        <p>对卷积神经网络（CNN）的结构示意图及其核心组件概述如下：</p>
+
+        <h2>1. 卷积神经网络中卷积层的主要作用</h2>
+        <p>卷积层是CNN的核心构建块，其主要作用是通过卷积操作从输入数据（如图像）中<strong>提取特征</strong>。它使用一组可学习的滤波器（或称卷积核）在输入数据上滑动，通过局部连接和权值共享的方式，识别出如边缘、纹理、形状等不同抽象级别的模式。这一过程不仅能够有效捕捉数据的空间层次关系，还能显著减少模型参数数量，降低计算复杂度。</p>
+
+        <h2>2. 池化层在卷积神经网络中如何工作</h2>
+        <p>池化层（也称为下采样层）通常位于卷积层之后，其主要工作是对特征图进行<strong>降维和压缩</strong>。它通过一个无权重的滤波器（如2x2窗口）在特征图上滑动，并对窗口内的值应用聚合函数（如取最大值或平均值），从而生成一个尺寸更小的特征图。这一操作有助于减少参数数量和计算量，提高模型效率，并增强网络对输入图像中目标位置微小变化的鲁棒性（即平移不变性）。</p>
+
+        <h2>3. 卷积神经网络的全连接层有什么功能</h2>
+        <p>全连接层通常位于CNN的末端，其功能是将前面卷积层和池化层提取到的<strong>高级特征进行整合，并映射到最终的输出</strong>（如分类概率）。在该层中，每个神经元都与前一层的所有神经元相连，类似于传统的神经网络结构。它负责基于学习到的特征进行推理和决策，最终通过Softmax等激活函数输出分类结果。</p>
+
+        <hr>
+
+        <blockquote>
+            <strong>引用来源：</strong>
+            <ul>
+                <li>卷积层、池化层与全连接层的基本概念与功能：<a href="https://www.cnblogs.com/wj-1314/p/9593364.html" target="_blank">深入学习卷积神经网络中卷积层和池化层的意义 - 博客园</a>、<a href="https://cloud.google.com/discover/what-are-convolutional-neural-networks?hl=zh-CN" target="_blank">什么是卷积神经网络 (CNN)？ | Google Cloud</a>、<a href="https://www.ibm.com/cn-zh/think/topics/convolutional-neural-networks" target="_blank">什么是卷积神经网络(CNN)？ - IBM</a>。</li>
+                <li>池化层的具体操作与类型：<a href="https://0809zheng.github.io/2021/07/02/pool.html" target="_blank">卷积神经网络中的池化(Pooling)层 - 郑之杰的个人网站</a>、<a href="https://www.cnblogs.com/pprp/p/12456403.html" target="_blank">卷积神经网络中的各种池化操作 - 博客园</a>。</li>
+                <li>全连接层的作用：<a href="https://www.rvmcu.com/column-topic-id-1309.html" target="_blank">CNN之卷积、全连接、池化、softmax层 - RISC-V MCU中文社区</a>、<a href="https://easyai.tech/ai-definition/cnn" target="_blank">一文看懂卷积神经网络-CNN - 管好AI</a>。</li>
+                <li>知识库中关于CNN结构的描述：<a href="https://faculty.csu.edu.cn/_tsf/00/67/UfYrii3Uriii.pdf" target="_blank">基于通道增强与特征补偿的RGB-IR跨模态行人重识别方法研究与系统实现_常乐乐.pdf</a>、<a href="https://faculty.csu.edu.cn/_tsf/00/67/UfYrii3Uriii.pdf" target="_blank">基于多尺度Transformer的行人重识别方法研究与系统设计_高月.pdf</a>。</li>
+            </ul>
+        </blockquote>
+    </div>
+</body>
+</html>
